@@ -11,24 +11,44 @@ matrix::matrix(unsigned int rows, unsigned int cols):rows(rows),cols(cols)
 	}
 	
 	// more to do...
+	else{
+		//following the one array method - makes things easier in the long run
+		the_matrix = new double[rows*cols];
+		//initialize array to 0
+		the_matrix = {0};
+	}
 }
 
 // Copy constructor
 matrix::matrix(const matrix& from):rows(from.rows),cols(from.cols)
 {
-	// stub
+	//create array
+	the_matrix = new double[rows*cols];
+	//copy over
+	*the_matrix = *from.the_matrix;
 }
 
 // Destructor
 matrix::~matrix()
 {
-	// stub
+	if(the_matrix != NULL){
+		//ha. delete the matrix. ha.
+		delete the_matrix;
+	}
 }
 
 // Assignment operator
 matrix& matrix::operator=(const matrix& rhs)
 {
-	// stub
+	//reset sizes
+	this->rows = rhs.rows;
+	this->cols = rhs.cols;
+	//delete and reinitialize
+	delete this->the_matrix;
+	this->the_matrix = new double[rows*cols];
+	//copy
+	//TODO:check the logic on this, may not work
+	*this->the_matrix = *rhs.the_matrix;
 	return *this;
 }
 
