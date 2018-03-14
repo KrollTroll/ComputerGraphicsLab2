@@ -41,14 +41,14 @@ matrix::~matrix()
 matrix& matrix::operator=(const matrix& rhs)
 {
 	//delete
-	delete this->the_matrix;
+	delete the_matrix;
 	//reset sizes
-	this->rows = rhs.rows;
-	this->cols = rhs.cols;
-	this->the_matrix = new double[rows*cols];
+	rows = rhs.rows;
+	cols = rhs.cols;
+	the_matrix = new double[rows*cols];
 	//copy
 	//TODO:check the logic on this, may not work
-	*this->the_matrix = *rhs.the_matrix;
+	the_matrix = rhs.the_matrix;
 	return *this;
 }
 
@@ -58,7 +58,7 @@ matrix matrix::identity(unsigned int size)
 	// use p-constructor
 	return matrix(size,size);
 
-	//TODO:figure out how to do the rest
+	//TODO:figure out how to do the rest, prolly wanna start from scratch
 
 	//logic pattern built
 	//int pos = 0;
@@ -77,15 +77,15 @@ matrix matrix::identity(unsigned int size)
 matrix matrix::operator+(const matrix& rhs) const
 {
 	//throw exception if matrices are no the same size
-	if(this->cols != rhs.cols || this->rows!= rhs.rows){
-		throw matrixException("addtion matrix sizes different!");
+	if(cols != rhs.cols || rows!= rhs.rows){
+		throw matrixException("addition matrix sizes different!");
 	}
 	//do linear add operation if they are -- this is the way that they are stored
 	else{
 		matrix retVal(rhs);
 		int size = rhs.cols * rhs.rows;
 		for(int i = 0; i < size; i++){
-			retVal.the_matrix[i] = retVal.the_matrix[i] + this->the_matrix[i];
+			retVal.the_matrix[i] = retVal.the_matrix[i] + the_matrix[i];
 		}
 
 		return retVal;
@@ -95,14 +95,18 @@ matrix matrix::operator+(const matrix& rhs) const
 
 matrix matrix::operator*(const matrix& rhs) const
 {
-	// stub
-	matrix retVal(rhs);
-	return retVal;
+	if(cols != rhs.rows){
+		throw matrixException("left matrix and right matrix not compatible!");
+	}
+	else{
+		//figure out an efficient algorithm
+		matrix retVal(rhs);
+		return retVal;
+	}
 }
 
 matrix matrix::operator*(const double scale) const
 {
-	// stub
 	matrix retVal(*this);
 	return retVal;
 }
@@ -120,6 +124,7 @@ matrix matrix::operator~() const
 void matrix::clear()
 {
 	// stub
+	the_matrix = {0};
 	return;
 }
 
