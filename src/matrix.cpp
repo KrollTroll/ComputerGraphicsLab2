@@ -2,15 +2,17 @@
 #include <string>
 #include <cmath>
 
-// Parameterized constructor
+/**
+ * This is the "standard" prioritized constructor
+ * @param rows : number of rows in a matrix
+ * @param cols : number of columns in a matrix
+ */
 matrix::matrix(unsigned int rows, unsigned int cols):rows(rows),cols(cols) 
 {  
 	if (rows < 1 || cols < 1)
 	{
 		throw matrixException("p-constructor bad arguments");
 	}
-	
-	// more to do...
 	else{
 		//following the one array method - makes things easier in the long run
 		the_matrix = new double[rows*cols];
@@ -19,7 +21,10 @@ matrix::matrix(unsigned int rows, unsigned int cols):rows(rows),cols(cols)
 	}
 }
 
-// Copy constructor
+/**
+ * copy constructor
+ * @param from : matrix to copy the new one from
+ */
 matrix::matrix(const matrix& from):rows(from.rows),cols(from.cols)
 {
 	//create array
@@ -28,7 +33,9 @@ matrix::matrix(const matrix& from):rows(from.rows),cols(from.cols)
 	*the_matrix = *from.the_matrix;
 }
 
-// Destructor
+/**
+ * destructor
+ */
 matrix::~matrix()
 {
 	if(the_matrix != NULL){
@@ -37,7 +44,11 @@ matrix::~matrix()
 	}
 }
 
-// Assignment operator
+/**
+ * assignment operator -- makes one matrix a copy of another
+ * @param rhs : the right hand side matrix to copy
+ * @return    : the new array copied over
+ */
 matrix& matrix::operator=(const matrix& rhs)
 {
 	//delete
@@ -73,7 +84,11 @@ matrix matrix::identity(unsigned int size)
 }
 
 
-// Binary operations
+/**
+ * binary operator -- adds two marices together
+ * @param rhs : right hand side matrix to add to the left
+ * @return    : the new combined matrix
+ */
 matrix matrix::operator+(const matrix& rhs) const
 {
 	//throw exception if matrices are no the same size
@@ -92,41 +107,61 @@ matrix matrix::operator+(const matrix& rhs) const
 	}
 }
 
-
+/**
+ * multiplication operator -- matrix by matrix, multiplies two matrices together
+ * 		throws exception if the two matrices are not compatible
+ * @param rhs : right hand matrix to multiply left by
+ * @return    : the new product matrix
+ */
 matrix matrix::operator*(const matrix& rhs) const
 {
 	if(cols != rhs.rows){
 		throw matrixException("left matrix and right matrix not compatible!");
 	}
 	else{
-		//figure out an efficient algorithm
+		//TODO: figure out an efficient algorithm
 		matrix retVal(rhs);
 		return retVal;
 	}
 }
 
+/**
+ * multiplication operator -- matrix by scalar, multiplies a matrix by a scalar
+ * @param scale : scalar to multiply matrix by
+ * @return		: the new product matrix
+ */
 matrix matrix::operator*(const double scale) const
 {
 	matrix retVal(*this);
+	int pos = rows*cols;
+	for(int i = 0; i < pos; i++){
+		retVal.the_matrix[i] *= scale;
+	}
 	return retVal;
 }
 
 
-// Unary operations
+/**
+ * unary operator -- transposes a given matrix
+ * @return : the new transposed matrix
+ */
 matrix matrix::operator~() const
 {
+	//TODO: this is going to take a bit, rows become columns and vv
 	// stub
 	matrix retVal(*this);
 	return retVal;
 }
 	
-
+/**
+ * clears a matrix and assigns all values to 0
+ */
 void matrix::clear()
 {
-	// stub
 	the_matrix = {0};
 	return;
 }
+
 
 double* matrix::operator[](unsigned int row)
 {
