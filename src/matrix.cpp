@@ -184,8 +184,12 @@ std::ostream& matrix::out(std::ostream& os) const
 
 
 
-// Global insertion and operator
-std::ostream& operator<<(std::ostream& os, const matrix& rhs)
+/**
+ * This is basically the print operator, just make it look pretty and you should be gucci
+ * @param os
+ * @param rhs
+ * @return
+ */std::ostream& operator<<(std::ostream& os, const matrix& rhs)
 {
 	// stub
 	os << "todo";
