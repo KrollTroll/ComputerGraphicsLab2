@@ -14,10 +14,13 @@ matrix::matrix(unsigned int rows, unsigned int cols):rows(rows),cols(cols)
 		throw matrixException("p-constructor bad arguments");
 	}
 	else{
+		int size = rows*cols;
 		//following the one array method - makes things easier in the long run
-		the_matrix = new double[rows*cols];
+		the_matrix = new double[size];
 		//initialize array to 0
-		the_matrix = {0};
+		for(int i = 0; i < size; i++){
+			the_matrix[i] = 0;
+		}
 	}
 }
 
@@ -194,8 +197,7 @@ std::ostream& matrix::out(std::ostream& os) const
 	for(int i = 0; i < wid; i++){
 		os << "\t[";
 		for(int i = 0; i < len; i++){
-			//os << the_matrix[pos] << " ";
-			os<< " " << pos <<" ";
+			os << " " << the_matrix[pos] << " ";
 			pos++;
 		}
 		os << "]\n";
