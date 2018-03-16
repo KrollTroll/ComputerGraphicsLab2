@@ -66,21 +66,27 @@ matrix& matrix::operator=(const matrix& rhs)
 // Named constructor (static)
 matrix matrix::identity(unsigned int size)
 {
-	// use p-constructor
-	return matrix(size,size);
+	if(size < 1){
+		throw matrixException("identity constructor bad argument");
+	}
+	else{
+		matrix ident = matrix(size, size);
 
-	//TODO:figure out how to do the rest, prolly wanna start from scratch
+		//logic pattern built
+		int pos = 0;
+		int the_rows = ident.rows;
+		int the_cols = ident.cols;
+		for(int i = 0; i < the_rows; i++){
+			for(int j = 0; j < the_cols; j++){
+				if(i==j){
+					ident.the_matrix[pos] = 1;
+				}
+				pos++;
+			}
+		}
 
-	//logic pattern built
-	//int pos = 0;
-	//for(int i = 0; i < rows; i++){
-	//	for(int j = 0; j < cols; j++){
-	//		if(i==j){
-	//			the_matrix[pos] = 1;
-	//		}
-	//		pos++;
-	//	}
-	//}
+		return ident;
+	}
 }
 
 
