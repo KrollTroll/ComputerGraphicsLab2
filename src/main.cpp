@@ -17,10 +17,10 @@ int main(void)
 	cout << "m2 - should be 3 x 3 identity matrix" << endl;
 	cout << m2 << endl;
 
-	matrix m3 = m1 + m2;
+	//matrix m3 = m1 + m2;
 
-	cout << "m3 - should be 3 x 3 identity matrix" << endl;
-	cout << m3 << endl;
+	//cout << "m3 - should be 3 x 3 identity matrix" << endl;
+	//cout << m3 << endl;
 	
 	try
 	{

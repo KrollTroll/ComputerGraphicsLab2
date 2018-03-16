@@ -51,15 +51,20 @@ matrix::~matrix()
  */
 matrix& matrix::operator=(const matrix& rhs)
 {
-	//delete
-	delete the_matrix;
-	//reset sizes
-	rows = rhs.rows;
-	cols = rhs.cols;
-	the_matrix = new double[rows*cols];
+	if(this->the_matrix != NULL){
+		//delete
+		delete the_matrix;
+	}
+	//reset size
+	this->rows = rhs.rows;
+	this->cols = rhs.cols;
+	int len = this->rows;
+	int wid = this->cols;
+	int size = len*wid;
+	the_matrix = new double[size];
 	//copy
 	//TODO:check the logic on this, may not work
-	the_matrix = rhs.the_matrix;
+	this->the_matrix = rhs.the_matrix;
 	return *this;
 }
 
@@ -70,22 +75,21 @@ matrix matrix::identity(unsigned int size)
 		throw matrixException("identity constructor bad argument");
 	}
 	else{
-		matrix ident = matrix(size, size);
+		//matrix ident(size, size);
 
 		//logic pattern built
-		int pos = 0;
-		int the_rows = ident.rows;
-		int the_cols = ident.cols;
-		for(int i = 0; i < the_rows; i++){
-			for(int j = 0; j < the_cols; j++){
-				if(i==j){
-					ident.the_matrix[pos] = 1;
-				}
-				pos++;
-			}
-		}
-
-		return ident;
+		//int pos = 0;
+		//int lengthOrWidth = size;
+		//for(int i = 0; i < lengthOrWidth; i++){
+			//for(int j = 0; j < lengthOrWidth; j++){
+				//if(i==j){
+					//TODO: figure out how to set
+					//(ident.the_matrix)[pos] = 1;
+				//}
+				//pos++;matrixException
+			//}
+		//}
+		return matrix(size, size);
 	}
 }
 
@@ -106,7 +110,7 @@ matrix matrix::operator+(const matrix& rhs) const
 		matrix retVal(rhs);
 		int size = rhs.cols * rhs.rows;
 		for(int i = 0; i < size; i++){
-			retVal.the_matrix[i] = retVal.the_matrix[i] + the_matrix[i];
+			(retVal.the_matrix)[i] = (retVal.the_matrix)[i] + (the_matrix)[i];
 		}
 
 		return retVal;
@@ -181,10 +185,21 @@ double* matrix::operator[](unsigned int row) const
 	return NULL;
 }
 
-
 std::ostream& matrix::out(std::ostream& os) const
 {
-	// stub
+	int len = cols;
+	int wid = rows;
+	int pos = 0;
+
+	for(int i = 0; i < wid; i++){
+		os << "\t[";
+		for(int i = 0; i < len; i++){
+			//os << the_matrix[pos] << " ";
+			os<< " " << pos <<" ";
+			pos++;
+		}
+		os << "]\n";
+	}
 	return os;	
 }
 
@@ -195,11 +210,11 @@ std::ostream& matrix::out(std::ostream& os) const
  * @param os
  * @param rhs
  * @return
- */std::ostream& operator<<(std::ostream& os, const matrix& rhs)
+ */
+std::ostream& operator<<(std::ostream& os, const matrix& rhs)
 {
-	// stub
-	os << "todo";
-	return os;
+	 rhs.out(os);
+	 return os;
 }
 
 // Global scalar multiplication
