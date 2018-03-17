@@ -65,9 +65,8 @@ matrix& matrix::operator=(const matrix& rhs)
 	rows = rhs.rows;
 	cols = rhs.cols;
 	int size = rows*cols;
-	//the_matrix = new double[size];
+	the_matrix = new double[size];
 	//copy
-	//TODO:check the logic on this, may not work
 	for(int i = 0; i < size; i++){
 		the_matrix[i] = rhs.the_matrix[i];
 	}
@@ -175,7 +174,10 @@ matrix matrix::operator~() const
  */
 void matrix::clear()
 {
-	the_matrix = {0};
+	int size = rows*cols;
+	for(int i = 0; i < size; i++){
+		the_matrix[i] = 0;
+	}
 	return;
 }
 
@@ -192,6 +194,9 @@ double* matrix::operator[](unsigned int row) const
 	return NULL;
 }
 
+/**
+ * This is the true print operator, it does the work
+ */
 std::ostream& matrix::out(std::ostream& os) const
 {
 	int col = this->cols;
@@ -223,12 +228,17 @@ std::ostream& operator<<(std::ostream& os, const matrix& rhs)
 	 return os;
 }
 
-// Global scalar multiplication
+/**
+ * global scalar function
+ * @param scale
+ * @param rhs
+ * @return
+ */
 matrix operator*(const double scale, const matrix& rhs)
 {
 	// stub
 	matrix retval(rhs);
-	return retval;
+	return (retval*scale);
 }
 
 
