@@ -30,10 +30,13 @@ matrix::matrix(unsigned int rows, unsigned int cols):rows(rows),cols(cols)
  */
 matrix::matrix(const matrix& from):rows(from.rows),cols(from.cols)
 {
+	int size = rows*cols;
 	//create array
-	the_matrix = new double[rows*cols];
+	the_matrix = new double[size];
 	//copy over
-	*the_matrix = *from.the_matrix;
+	for(int i = 0; i < size; i++){
+		the_matrix[i] = from.the_matrix[i];
+	}
 }
 
 /**
@@ -56,18 +59,18 @@ matrix& matrix::operator=(const matrix& rhs)
 {
 	if(this->the_matrix != NULL){
 		//delete
-		delete the_matrix;
+		//delete the_matrix;
 	}
 	//reset size
-	this->rows = rhs.rows;
-	this->cols = rhs.cols;
-	int len = this->rows;
-	int wid = this->cols;
-	int size = len*wid;
-	the_matrix = new double[size];
+	rows = rhs.rows;
+	cols = rhs.cols;
+	int size = rows*cols;
+	//the_matrix = new double[size];
 	//copy
 	//TODO:check the logic on this, may not work
-	this->the_matrix = rhs.the_matrix;
+	for(int i = 0; i < size; i++){
+		the_matrix[i] = rhs.the_matrix[i];
+	}
 	return *this;
 }
 
@@ -78,23 +81,24 @@ matrix matrix::identity(unsigned int size)
 		throw matrixException("identity constructor bad argument");
 	}
 	else{
-		//matrix ident(size, size);
+		matrix ident(size, size);
 
 		//logic pattern built
-		//int pos = 0;
-		//int lengthOrWidth = size;
-		//for(int i = 0; i < lengthOrWidth; i++){
-			//for(int j = 0; j < lengthOrWidth; j++){
-				//if(i==j){
+		int pos = 0;
+		int side = size;
+		for(int i = 0; i < side; i++){
+				for(int j = 0; j < side; j++){
 					//TODO: figure out how to set
-					//(ident.the_matrix)[pos] = 1;
-				//}
-				//pos++;matrixException
-			//}
-		//}
-		return matrix(size, size);
-	}
+					if(i == j){
+						ident.the_matrix[pos] = 1;
+					}
+					pos++;
+				}
+			}
+			return ident;
+		}
 }
+
 
 
 /**
@@ -190,14 +194,14 @@ double* matrix::operator[](unsigned int row) const
 
 std::ostream& matrix::out(std::ostream& os) const
 {
-	int len = cols;
-	int wid = rows;
+	int col = this->cols;
+	int row = this->rows;
 	int pos = 0;
 
-	for(int i = 0; i < wid; i++){
+	for(int i = 0; i < col; i++){
 		os << "\t[";
-		for(int i = 0; i < len; i++){
-			os << " " << the_matrix[pos] << " ";
+		for(int i = 0; i < row; i++){
+			os << " " << this->the_matrix[pos] << " ";
 			pos++;
 		}
 		os << "]\n";
