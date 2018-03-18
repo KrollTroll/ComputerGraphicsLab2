@@ -91,6 +91,9 @@ matrix matrix::identity(unsigned int size)
 					if(i == j){
 						ident.the_matrix[pos] = 1;
 					}
+					//else{
+					//	ident.the_matrix[pos] = pos;
+					//}
 					pos++;
 				}
 			}
@@ -184,14 +187,24 @@ void matrix::clear()
 
 double* matrix::operator[](unsigned int row)
 {
-	// stub
-	return NULL;
+	if(row > this->rows){
+		throw matrixException("[] argument invalid");
+	}
+	else{
+		double* ptr = &(this->the_matrix[0 + (row-1)*this->cols]);
+		return ptr;
+	}
 }
 
 double* matrix::operator[](unsigned int row) const
 {
-	// stub
-	return NULL;
+	if(row > this->rows){
+		throw matrixException("[] argument invalid");
+	}
+	else{
+		double* ptr = &(this->the_matrix[0 + (row-1)*this->cols]);
+		return ptr;
+	}
 }
 
 /**
