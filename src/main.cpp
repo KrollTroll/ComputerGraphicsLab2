@@ -32,6 +32,15 @@ int main(void)
 		cout << "m4 - exception expected and thrown" << endl;
 	}
 	
+	matrix m4(3,2);
+	matrix m5(2,3);
+
+
+	~matrix(m1);
+	~matrix(m2);
+	~matrix(m3);
+	~matrix(m4);
+	~matrix(m5);
 	return 0;
 
 
