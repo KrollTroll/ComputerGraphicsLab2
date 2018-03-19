@@ -169,6 +169,16 @@ matrix matrix::operator~() const
 	//TODO: this is going to take a bit, rows become columns and vv
 	// stub
 	matrix retVal(*this);
+	int len = retVal.rows;
+	int wid = retVal.cols;
+
+	for(int i = 0; i < wid; i++){
+		for(int j = 0; j < len; j++){
+			retVal[len][wid] = this[wid][len];
+		}
+	}
+	retVal.cols = this->rows;
+	retVal.rows = this->cols;
 	return retVal;
 }
 	
@@ -184,7 +194,11 @@ void matrix::clear()
 	return;
 }
 
-
+/**
+ * operator to return the pointer to the first element of specified row
+ * @param row : specified row
+ * @return
+ */
 double* matrix::operator[](unsigned int row)
 {
 	if(row > this->rows){
@@ -196,6 +210,11 @@ double* matrix::operator[](unsigned int row)
 	}
 }
 
+/**
+ * same as other [] op, but const for other const methods
+ * @param row : specified row
+ * @return
+ */
 double* matrix::operator[](unsigned int row) const
 {
 	if(row > this->rows){
