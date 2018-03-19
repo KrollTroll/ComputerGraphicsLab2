@@ -83,19 +83,9 @@ matrix matrix::identity(unsigned int size)
 		matrix ident(size, size);
 
 		//logic pattern built
-		int pos = 0;
 		int side = size;
 		for(int i = 0; i < side; i++){
-				for(int j = 0; j < side; j++){
-					//TODO: figure out how to set
-					if(i == j){
-						ident.the_matrix[pos] = 1;
-					}
-					//else{
-					//	ident.the_matrix[pos] = pos;
-					//}
-					pos++;
-				}
+				ident[i][i] = 1;
 			}
 			return ident;
 		}
@@ -139,8 +129,20 @@ matrix matrix::operator*(const matrix& rhs) const
 	}
 	else{
 		//TODO: figure out an efficient algorithm
-		matrix retVal(rhs);
-		return retVal;
+		int rows_lhs = this->rows;
+		int cols_lhs = this->cols;
+		int cols_rhs = rhs.cols;
+		matrix product(rows_lhs, cols_rhs);
+		matrix dupe(rhs);
+		~dupe;
+		for(int i = 0; i < rows_lhs; i++){
+			for(int j = 0; j < cols_rhs; j++){
+				for(int k = 0; k < cols_lhs; k++){
+					product[i][j] += (*this)[i][k]*rhs[k][j];
+				}
+			}
+		}
+		return product;
 	}
 }
 
@@ -169,12 +171,12 @@ matrix matrix::operator~() const
 	//TODO: this is going to take a bit, rows become columns and vv
 	// stub
 	matrix retVal(*this);
-	int len = retVal.rows;
-	int wid = retVal.cols;
+	int row = retVal.rows;
+	int col = retVal.cols;
 
-	for(int i = 0; i < wid; i++){
-		for(int j = 0; j < len; j++){
-			retVal[len][wid] = this[wid][len];
+	for(int i = 0; i < row; i++){
+		for(int j = 0; j < col; j++){
+				retVal[j][i] = (*this)[i][j];
 		}
 	}
 	retVal.cols = this->rows;
@@ -205,7 +207,7 @@ double* matrix::operator[](unsigned int row)
 		throw matrixException("[] argument invalid");
 	}
 	else{
-		double* ptr = &(this->the_matrix[0 + (row-1)*this->cols]);
+		double* ptr = &(this->the_matrix[0 + (row)*this->cols]);
 		return ptr;
 	}
 }
@@ -221,7 +223,7 @@ double* matrix::operator[](unsigned int row) const
 		throw matrixException("[] argument invalid");
 	}
 	else{
-		double* ptr = &(this->the_matrix[0 + (row-1)*this->cols]);
+		double* ptr = &(this->the_matrix[0 + (row)*this->cols]);
 		return ptr;
 	}
 }
