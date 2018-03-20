@@ -1,6 +1,14 @@
 #include "matrix.h"
 #include <string>
 #include <cmath>
+#include <iostream>
+
+/**
+ * Connor Kroll
+ * Lab 2 - Computer Graphics
+ *
+ * This project supplies functionality for a matrix class and operators
+ */
 
 /**
  * This is the "standard" prioritized constructor
@@ -9,11 +17,13 @@
  */
 matrix::matrix(unsigned int rows, unsigned int cols):rows(rows),cols(cols) 
 {  
+	//throw exception if matrix too small
 	if (rows < 1 || cols < 1)
 	{
 		throw matrixException("p-constructor bad arguments");
 	}
 	else{
+		//set array size
 		int size = rows*cols;
 		//following the one array method - makes things easier in the long run
 		the_matrix = new double[size];
@@ -35,7 +45,7 @@ matrix::matrix(const matrix& from):rows(from.rows),cols(from.cols)
 	the_matrix = new double[size];
 	//copy over
 	for(int i = 0; i < size; i++){
-		the_matrix[i] = from.the_matrix[i];
+		the_matrix[i] = (from.the_matrix)[i];
 	}
 }
 
@@ -46,7 +56,7 @@ matrix::~matrix()
 {
 	if(the_matrix != NULL){
 		//ha. delete the matrix. ha.
-		delete the_matrix;
+		delete []the_matrix;
 	}
 }
 
@@ -59,7 +69,7 @@ matrix& matrix::operator=(const matrix& rhs)
 {
 	if(this->the_matrix != NULL){
 		//delete
-		//delete the_matrix;
+		delete []the_matrix;
 	}
 	//reset size
 	rows = rhs.rows;
@@ -76,21 +86,21 @@ matrix& matrix::operator=(const matrix& rhs)
 // Named constructor (static)
 matrix matrix::identity(unsigned int size)
 {
+	//throw exception if size is too small
 	if(size < 1){
 		throw matrixException("identity constructor bad argument");
 	}
 	else{
+		//make empty array
 		matrix ident(size, size);
-
-		//logic pattern built
 		int side = size;
+		//iterate through and assign ones on the diagonal
 		for(int i = 0; i < side; i++){
 				ident[i][i] = 1;
 			}
 			return ident;
 		}
 }
-
 
 
 /**
@@ -104,14 +114,13 @@ matrix matrix::operator+(const matrix& rhs) const
 	if(cols != rhs.cols || rows!= rhs.rows){
 		throw matrixException("addition matrix sizes different!");
 	}
-	//do linear add operation if they are -- this is the way that they are stored
+	//do linear add operation if they are
 	else{
 		matrix retVal(rhs);
 		int size = rhs.cols * rhs.rows;
 		for(int i = 0; i < size; i++){
 			(retVal.the_matrix)[i] = (retVal.the_matrix)[i] + (the_matrix)[i];
 		}
-
 		return retVal;
 	}
 }
@@ -124,21 +133,26 @@ matrix matrix::operator+(const matrix& rhs) const
  */
 matrix matrix::operator*(const matrix& rhs) const
 {
+	//throw exception if the matrices are incompatible
 	if(cols != rhs.rows){
 		throw matrixException("left matrix and right matrix not compatible!");
 	}
 	else{
 		//TODO: figure out an efficient algorithm
-		int rows_lhs = this->rows;
-		int cols_lhs = this->cols;
+		int rows_lhs = rows;
+		//int rows_rhs = rhs.rows;
+		int cols_lhs = cols;
 		int cols_rhs = rhs.cols;
 		matrix product(rows_lhs, cols_rhs);
-		matrix dupe(rhs);
-		~dupe;
+		//perform multiplication
+		//for each row in the right-hand matrix
 		for(int i = 0; i < rows_lhs; i++){
+			//iterate through each column in the right-hand matrix
 			for(int j = 0; j < cols_rhs; j++){
+				//iterate through each column in the left-hand matrix
 				for(int k = 0; k < cols_lhs; k++){
-					product[i][j] += (*this)[i][k]*rhs[k][j];
+					//assign the new matrix the values of each product added together
+					product[i][j] += (((*this)[i][k])*(rhs[k][j]));
 				}
 			}
 		}
@@ -155,6 +169,7 @@ matrix matrix::operator*(const double scale) const
 {
 	matrix retVal(*this);
 	int pos = rows*cols;
+	//linear multiplication -- multiply each array index by scalar
 	for(int i = 0; i < pos; i++){
 		retVal.the_matrix[i] *= scale;
 	}
@@ -168,19 +183,21 @@ matrix matrix::operator*(const double scale) const
  */
 matrix matrix::operator~() const
 {
-	//TODO: this is going to take a bit, rows become columns and vv
-	// stub
-	matrix retVal(*this);
-	int row = retVal.rows;
-	int col = retVal.cols;
+	//clone target
+	matrix dupe(*this);
+	//create new matrix with opposite measurements
+	matrix retVal(cols, rows);
+	int row = rows;
+	int col = cols;
 
+	//iterate through the rows
 	for(int i = 0; i < row; i++){
+		//iterate through the columns
 		for(int j = 0; j < col; j++){
-				retVal[j][i] = (*this)[i][j];
+			//swap values
+			retVal[j][i]=dupe[i][j];
 		}
 	}
-	retVal.cols = this->rows;
-	retVal.rows = this->cols;
 	return retVal;
 }
 	
@@ -190,6 +207,7 @@ matrix matrix::operator~() const
 void matrix::clear()
 {
 	int size = rows*cols;
+	//iterate through the array and assign each index 0
 	for(int i = 0; i < size; i++){
 		the_matrix[i] = 0;
 	}
@@ -203,12 +221,13 @@ void matrix::clear()
  */
 double* matrix::operator[](unsigned int row)
 {
+	//throw exception if out of bounds
 	if(row > this->rows){
 		throw matrixException("[] argument invalid");
 	}
+	//return pointer to first member of that row
 	else{
-		double* ptr = &(this->the_matrix[0 + (row)*this->cols]);
-		return ptr;
+		return &(the_matrix[(row)*cols]);
 	}
 }
 
@@ -219,12 +238,13 @@ double* matrix::operator[](unsigned int row)
  */
 double* matrix::operator[](unsigned int row) const
 {
+	//throw exception if out of bounds
 	if(row > this->rows){
 		throw matrixException("[] argument invalid");
 	}
+	//return pointer to the first member of that row
 	else{
-		double* ptr = &(this->the_matrix[0 + (row)*this->cols]);
-		return ptr;
+		return &(the_matrix[(row)*cols]);
 	}
 }
 
@@ -233,16 +253,20 @@ double* matrix::operator[](unsigned int row) const
  */
 std::ostream& matrix::out(std::ostream& os) const
 {
-	int col = this->cols;
-	int row = this->rows;
+	int col = cols;
+	int row = rows;
 	int pos = 0;
 
-	for(int i = 0; i < col; i++){
+	//for each row
+	for(int i = 0; i < row; i++){
+		//print out start bracket
 		os << "\t[";
-		for(int i = 0; i < row; i++){
-			os << " " << this->the_matrix[pos] << " ";
+		//print each matrix location
+		for(int i = 0; i < col; i++){
+			os << "\t" << the_matrix[pos] << "\t";
 			pos++;
 		}
+		//print closing bracket
 		os << "]\n";
 	}
 	return os;	
@@ -258,8 +282,9 @@ std::ostream& matrix::out(std::ostream& os) const
  */
 std::ostream& operator<<(std::ostream& os, const matrix& rhs)
 {
-	 rhs.out(os);
-	 return os;
+	//call output method
+	rhs.out(os);
+	return os;
 }
 
 /**
@@ -270,7 +295,7 @@ std::ostream& operator<<(std::ostream& os, const matrix& rhs)
  */
 matrix operator*(const double scale, const matrix& rhs)
 {
-	// stub
+	//do basic scalar multiplication
 	matrix retval(rhs);
 	return (retval*scale);
 }
