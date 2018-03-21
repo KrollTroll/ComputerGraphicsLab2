@@ -7,6 +7,10 @@ CPP_SRCS += \
 ../src/main.cpp \
 ../src/matrix.cpp 
 
+O_SRCS += \
+../src/main.o \
+../src/matrix.o 
+
 OBJS += \
 ./src/main.o \
 ./src/matrix.o 

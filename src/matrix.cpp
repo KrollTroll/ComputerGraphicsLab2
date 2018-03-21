@@ -262,7 +262,7 @@ std::ostream& matrix::out(std::ostream& os) const
 		//print out start bracket
 		os << "\t[";
 		//print each matrix location
-		for(int i = 0; i < col; i++){
+		for(int j = 0; j < col; j++){
 			os << "\t" << the_matrix[pos] << "\t";
 			pos++;
 		}
